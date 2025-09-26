@@ -1,5 +1,10 @@
 import axios from "axios";
 
+console.log("Environment variables:", {
+  NODE_ENV: process.env.NODE_ENV,
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL || "/api"
+});
 // Create axios instance
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || "/api",
