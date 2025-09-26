@@ -7,7 +7,7 @@ console.log("Environment variables:", {
 });
 // Create axios instance
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "/api",
+  baseURL: "https://8afa74398c84.ngrok-free.app/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
