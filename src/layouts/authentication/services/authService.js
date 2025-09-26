@@ -1,8 +1,9 @@
 import axios from "axios";
+import apiClient from "./axiosInterceptor";
 
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`/api/User/login`, { email, password });
+    const response = await apiClient.post(`/User/login`, { email, password });
 
     console.log("Complete API Response:", response);
 
@@ -27,7 +28,7 @@ export const register = async (registrationData) => {
   try {
     console.log("Sending registration data:", registrationData); // Debug log
 
-    const response = await axios.post(`/api/User/register`, {
+    const response = await apiClient.post(`/User/register`, {
       email: registrationData.email,
       password: registrationData.password,
       role: registrationData.role || "User",
@@ -61,7 +62,7 @@ export const logout = () => {
 // Get departments for employee registration
 export const getDepartments = async () => {
   try {
-    const response = await axios.get("/api/User/departments");
+    const response = await apiClient.get("/departments");
     return response.data;
   } catch (error) {
     console.error("Error fetching departments:", error);
@@ -87,7 +88,7 @@ export const getEntitiesWithoutAccounts = async (entityType = null) => {
 // Get all users (admin only)
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get("/api/User/all");
+    const response = await apiClient.get("/User/all");
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -98,7 +99,7 @@ export const getAllUsers = async () => {
 // Toggle user approval (admin only)
 export const toggleUserApproval = async (userId) => {
   try {
-    const response = await axios.post(`/api/User/toggle-approval/${userId}`);
+    const response = await apiClient.post(`/User/toggle-approval/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error toggling user approval:", error);
@@ -109,7 +110,7 @@ export const toggleUserApproval = async (userId) => {
 // Update user
 export const updateUser = async (userId, updateData) => {
   try {
-    const response = await axios.put(`/api/User/update/${userId}`, updateData);
+    const response = await apiClient.put(`/User/update/${userId}`, updateData);
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -120,7 +121,7 @@ export const updateUser = async (userId, updateData) => {
 // Delete user
 export const deleteUser = async (userId) => {
   try {
-    const response = await axios.delete(`/api/User/delete/${userId}`);
+    const response = await apiClient.delete(`/User/delete/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting user:", error);
@@ -131,7 +132,7 @@ export const deleteUser = async (userId) => {
 // Validate engineer code availability
 export const validateEngineerCode = async (code) => {
   try {
-    const response = await axios.get(`/api/Engineer/validate-code/${code}`);
+    const response = await apiClient.get(`/Engineer/validate-code/${code}`);
     return response.data;
   } catch (error) {
     throw error.response?.data?.error || "Error validating engineer code";
@@ -141,7 +142,7 @@ export const validateEngineerCode = async (code) => {
 // Validate client code availability
 export const validateClientCode = async (code) => {
   try {
-    const response = await axios.get(`/api/Client/validate-code/${code}`);
+    const response = await apiClient.get(`/Client/validate-code/${code}`);
     return response.data;
   } catch (error) {
     throw error.response?.data?.error || "Error validating client code";
@@ -151,7 +152,7 @@ export const validateClientCode = async (code) => {
 // Get user profile with entity details
 export const getUserProfile = async (userId) => {
   try {
-    const response = await axios.get(`/api/User/${userId}`);
+    const response = await apiClient.get(`/User/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -162,7 +163,7 @@ export const getUserProfile = async (userId) => {
 // Update user profile
 export const updateUserProfile = async (userId, profileData) => {
   try {
-    const response = await axios.put(`/api/User/profile/${userId}`, profileData);
+    const response = await apiClient.put(`/User/profile/${userId}`, profileData);
     return response.data;
   } catch (error) {
     console.error("Error updating user profile:", error);
@@ -173,7 +174,7 @@ export const updateUserProfile = async (userId, profileData) => {
 // Change password
 export const changePassword = async (userId, oldPassword, newPassword) => {
   try {
-    const response = await axios.post(`/api/User/change-password/${userId}`, {
+    const response = await apiClient.post(`/User/change-password/${userId}`, {
       oldPassword,
       newPassword,
     });
@@ -187,7 +188,7 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
 // Request password reset
 export const requestPasswordReset = async (email) => {
   try {
-    const response = await axios.post("/api/User/request-password-reset", { email });
+    const response = await apiClient.post("/User/request-password-reset", { email });
     return response.data;
   } catch (error) {
     console.error("Error requesting password reset:", error);
@@ -198,7 +199,7 @@ export const requestPasswordReset = async (email) => {
 // Reset password with token
 export const resetPassword = async (token, newPassword) => {
   try {
-    const response = await axios.post("/api/User/reset-password", {
+    const response = await apiClient.post("/User/reset-password", {
       token,
       newPassword,
     });
