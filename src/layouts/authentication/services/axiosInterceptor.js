@@ -33,11 +33,12 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor
+// Response interceptor
 apiClient.interceptors.response.use(
   (response) => {
     // Log successful responses
     console.log(`API Response: ${response.status} ${response.config.url}`, response.data);
-    return response;
+    return response.data; // <-- return only the JSON payload
   },
   (error) => {
     console.error("API Error:", {
@@ -51,21 +52,16 @@ apiClient.interceptors.response.use(
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       console.log("Authentication error detected:", error.response.status);
 
-      // Don't redirect if already on authentication pages
       const currentPath = window.location.pathname;
       const authPages = ["/authentication/sign-in", "/authentication/sign-up"];
 
       if (!authPages.some((page) => currentPath.includes(page))) {
-        // Store current URL for redirect after login
         sessionStorage.setItem("redirectUrl", currentPath);
-
-        // Clear authentication data
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         localStorage.removeItem("userId");
         localStorage.removeItem("user");
 
-        // Redirect to login
         window.location.href = "/authentication/sign-in";
       }
     }
@@ -73,11 +69,11 @@ apiClient.interceptors.response.use(
     // Handle server errors
     if (error.response && error.response.status >= 500) {
       console.error("Server error:", error.response.status);
-      // You could show a global error notification here
     }
 
     return Promise.reject(error);
   }
 );
+
 
 export default apiClient;
