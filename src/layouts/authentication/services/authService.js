@@ -248,3 +248,12 @@ export const getPasswordRequirements = () => {
     "Au moins un caractère spécial",
   ];
 };
+
+export const getDepartments = async () => {
+  try {
+    const response = await apiClient.get("/departments");
+    return response;
+  } catch (error) {
+    throw error.response?.data?.message || "Erreur lors de la récupération des départements";
+  }
+};
