@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance
 const apiClient = axios.create({
-  baseURL: "https://e2fb04d9b5ad.ngrok-free.app/api",
+  baseURL: "https://sos-main-api.onrender.com/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
