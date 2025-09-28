@@ -36,15 +36,24 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     try {
+      // Debug: Log the raw response structure
+      console.log("Raw response.data:", response.data);
+
       // Unified payload: prefer response.data.data (some APIs wrap like { data: ... })
       const payload =
         response.data && response.data.data !== undefined ? response.data.data : response.data;
 
+      console.log("Extracted payload:", payload);
+
       // Log response summary (avoid printing huge or sensitive things)
       console.log(
         `API Response: ${response.status} ${response.config.url}`,
-        // If payload is object, show keys to avoid dumping token in logs accidentally
-        typeof payload === "object" && payload !== null ? Object.keys(payload) : payload
+        // Handle different payload types for better logging
+        Array.isArray(payload)
+          ? `Array with ${payload.length} items`
+          : typeof payload === "object" && payload !== null
+          ? Object.keys(payload)
+          : payload
       );
 
       // If this is the login endpoint and returned a token, persist it
@@ -65,18 +74,16 @@ apiClient.interceptors.response.use(
         }
       }
 
-      // For GET requests you might want the full object with headers/pagination info.
-      // If you want that behavior uncomment below and return that instead.
-      // if (response.config.method === 'get') {
-      //   return { data: payload, headers: response.headers, status: response.status };
-      // }
+      // SOLUTION 2: Preserve axios response structure but with normalized data
+      response.data = payload;
+      return response; // Return the full response object with modified data
 
-      // Default: return the normalized payload (so callers get the JSON body directly)
-      return payload;
+      // Alternative: If you want to keep your current approach (returning payload directly),
+      // then update your authService.js to expect the payload directly instead of response.data
     } catch (e) {
       console.error("Error processing response:", e);
-      // fallback: return raw data if something unexpected happened
-      return response.data;
+      // fallback: return original response if something unexpected happened
+      return response;
     }
   },
   (error) => {
