@@ -422,6 +422,7 @@ const MaintenanceDashboard = () => {
               borderRadius: 2,
               textTransform: "none",
               fontWeight: 600,
+              color: "white",
               boxShadow: "none",
               px: 3,
               "&:hover": {
