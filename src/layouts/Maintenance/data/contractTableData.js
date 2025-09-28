@@ -280,6 +280,7 @@ export default function contractsTableData({ onEditContract, onDeleteContract, o
           borderRadius: "50%",
           minWidth: 56,
           width: 56,
+          color: "white",
           height: 56,
           boxShadow: 6,
           "&:hover": {
