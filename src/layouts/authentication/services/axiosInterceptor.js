@@ -33,12 +33,51 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor
-// Response interceptor
 apiClient.interceptors.response.use(
   (response) => {
-    // Log successful responses
-    console.log(`API Response: ${response.status} ${response.config.url}`, response.data);
-    return response.data; // <-- return only the JSON payload
+    try {
+      // Unified payload: prefer response.data.data (some APIs wrap like { data: ... })
+      const payload =
+        response.data && response.data.data !== undefined ? response.data.data : response.data;
+
+      // Log response summary (avoid printing huge or sensitive things)
+      console.log(
+        `API Response: ${response.status} ${response.config.url}`,
+        // If payload is object, show keys to avoid dumping token in logs accidentally
+        typeof payload === "object" && payload !== null ? Object.keys(payload) : payload
+      );
+
+      // If this is the login endpoint and returned a token, persist it
+      // Adjust the URL check to your real login route if different
+      const url = (response.config.url || "").toLowerCase();
+      if (url.includes("/user/login") && payload && payload.token) {
+        try {
+          localStorage.setItem("token", payload.token);
+          if (payload.user) {
+            localStorage.setItem("user", JSON.stringify(payload.user));
+            // optional: store role or id if present
+            if (payload.user.role) localStorage.setItem("role", payload.user.role);
+            if (payload.user.id) localStorage.setItem("userId", payload.user.id);
+          }
+          console.log("Saved auth token + user to localStorage");
+        } catch (e) {
+          console.warn("Could not persist auth info to localStorage", e);
+        }
+      }
+
+      // For GET requests you might want the full object with headers/pagination info.
+      // If you want that behavior uncomment below and return that instead.
+      // if (response.config.method === 'get') {
+      //   return { data: payload, headers: response.headers, status: response.status };
+      // }
+
+      // Default: return the normalized payload (so callers get the JSON body directly)
+      return payload;
+    } catch (e) {
+      console.error("Error processing response:", e);
+      // fallback: return raw data if something unexpected happened
+      return response.data;
+    }
   },
   (error) => {
     console.error("API Error:", {
