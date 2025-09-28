@@ -246,6 +246,7 @@ export default function contractsTableData({ onEditContract, onDeleteContract, o
           startIcon={<Icon>add</Icon>}
           sx={{
             boxShadow: 3,
+            color: "white",
             "&:hover": {
               boxShadow: 6,
               transform: "translateY(-1px)",
